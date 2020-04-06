@@ -1,0 +1,25 @@
+{
+	"name": "ava-smartcontracts",
+	"version": "v0.0.1",
+	"description": "Smart contracts for AVA Framework.",
+	"scripts": {
+		"clean": "rm -rf build/ && mkdir -p build/contracts",
+		"build": "truffle compile && ./flatten.sh",
+		"deploy": "truffle migrate",
+		"lint": "./node_modules/.bin/eslint src test && ./node_modules/.bin/solhint contracts/**/*.sol",
+		"test": "npm run clean && truffle compile && truffle test"
+	},
+	"author": "",
+	"license": "MIT",
+	"devDependencies": {
+		"eslint": "^5.14.1",
+		"mocha": "^5.2.0",
+		"node-fetch": "^2.2.0",
+		"openzeppelin-solidity": "2.5.0",
+		"solc": "0.5.16",
+		"solhint": "^2.0.0",
+		"truffle": "5.1.16",
+		"truffle-flattener": "1.4.2",
+		"web3": "1.2.6"
+	}
+}

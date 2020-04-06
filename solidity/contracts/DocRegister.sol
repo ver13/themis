@@ -1,7 +1,7 @@
 pragma solidity >=0.5.0 <0.6.0;
 
 // Base contract that can be destroyed by owner. 
-import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /** 
  * @title DocRegister
@@ -10,7 +10,7 @@ import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
  * Due to storage limitations, documents are stored on IPFS.  
  * The IPFS hash along with metadata are stored onchain.
  */
-contract DocRegister is Destructible {
+contract DocRegister is Ownable {
 	
 	/** 
 	* @title Represents a single document which is owned by someone. 
@@ -69,7 +69,7 @@ contract DocRegister is Destructible {
 	* @dev This function is called for all messages sent to this contract (there is no other function).
 	* Sending Ether to this contract will cause an exception, because the fallback function does not have the `payable` modifier.
 	*/
-	function() public {}
+	function() external {}
 	
 	/** 
 	* @notice associate an document entry with the owner i.e. sender address
@@ -80,10 +80,10 @@ contract DocRegister is Destructible {
 	* @param _tags The document tag(s)
 	*/
 	function uploadDocument(
-		string _ipfsHash,
-		string _title,
-		string _description,
-		string _tags
+		string memory _ipfsHash,
+		string memory _title,
+		string memory _description,
+		string memory _tags
 	) public stopInEmergency returns (
 		bool _success
 	) {
@@ -125,7 +125,7 @@ contract DocRegister is Destructible {
 	public view stopInEmergency returns (
 		uint256
 	) {
-		require(_owner != 0x0);
+		require(_owner != address(0));
 		return ownerToDocuments[_owner].length;
 	}
 	
@@ -142,13 +142,13 @@ contract DocRegister is Destructible {
 	*/
 	function getDocument(address _owner, uint8 _index)
 	public stopInEmergency view returns (
-		string _ipfsHash,
-		string _title,
-		string _description,
-		string _tags,
+		string memory _ipfsHash,
+		string memory _title,
+		string memory _description,
+		string memory _tags,
 		uint256 _uploadedOn
 	) {
-		require(_owner != 0x0);
+		require(_owner != address(0));
 		require(_index >= 0 && _index <= 2**8 - 1);
 		require(ownerToDocuments[_owner].length > 0);
 		
@@ -173,6 +173,6 @@ contract DocRegister is Destructible {
 	public onlyOwner
 	{
 		stopped = _stop;
-		emit LogEmergencyStop(owner, _stop);
+		emit LogEmergencyStop(msg.sender, _stop);
 	}
 }
